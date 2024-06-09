@@ -5,6 +5,7 @@ import com.example.BackEnd_LTS_edu.entity.TaiKhoan;
 import com.example.BackEnd_LTS_edu.repository.QuyenHanRepo;
 import com.example.BackEnd_LTS_edu.repository.TaiKhoanRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,15 @@ public class TaiKhoanService {
 
     public TaiKhoan addTaiKhoan(TaiKhoan taiKhoan) {
         Optional<QuyenHan> quyenHan = quyenHanRepo.findById(taiKhoan.getQuyenHanId());
+        if (taiKhoanRepo.existsByTaiKhoan(taiKhoan.getTaiKhoan())) {
+            throw new RuntimeException("TaiKhoan Already Exists");
+        }
+        String matKhau = taiKhoan.getMatKhau();
+        boolean chuaChuSo = matKhau.matches(".*\\d.*");
+        boolean chuaKyTuDacBiet = matKhau.matches(".*[!@#$%^&*(),.?\":{}|<>].*");
+        if (!chuaChuSo || !chuaKyTuDacBiet) {
+            throw new IllegalArgumentException("Mật khẩu phải có chữ số và ký tự đặc biệt");
+        }
         if (quyenHan.isPresent()) {
             return taiKhoanRepo.save(taiKhoan);
         }
@@ -55,12 +65,18 @@ public class TaiKhoanService {
     public String deletetTaiKhoan(int id) {
         Optional<TaiKhoan> taiKhoanOptional = taiKhoanRepo.findById(id);
         if (taiKhoanOptional.isPresent()) {
-            TaiKhoan taiKhoan = taiKhoanOptional.get();
-            quyenHanRepo.delete(taiKhoan.getQuyenHan());
-            taiKhoanRepo.delete(taiKhoan);
+            taiKhoanRepo.deleteById(id);
             return "Tài Khoản Deleted Successfully";
         } else {
             throw new IllegalArgumentException("Tài Khoản Not Found");
         }
+    }
+
+    public List<TaiKhoan> findByTenTK(String tentk) {
+        return taiKhoanRepo.findByTaiKhoan(tentk);
+    }
+
+    public List<TaiKhoan> phantrang(Pageable pageable) {
+        return taiKhoanRepo.findAll(pageable).getContent();
     }
 }

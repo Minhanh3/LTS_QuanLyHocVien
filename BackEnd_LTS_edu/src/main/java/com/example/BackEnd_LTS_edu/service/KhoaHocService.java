@@ -1,6 +1,5 @@
 package com.example.BackEnd_LTS_edu.service;
 
-import com.example.BackEnd_LTS_edu.entity.DangKyHoc;
 import com.example.BackEnd_LTS_edu.entity.KhoaHoc;
 import com.example.BackEnd_LTS_edu.entity.LoaiKhoaHoc;
 import com.example.BackEnd_LTS_edu.repository.DangKyHocRepo;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class KhoaHocService {

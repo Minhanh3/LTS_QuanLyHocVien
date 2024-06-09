@@ -1,5 +1,6 @@
 package com.example.BackEnd_LTS_edu.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,6 +42,7 @@ public class ChuDe {
 
     @ManyToOne
     @JoinColumn(name = "loaibaivietid", insertable = false, updatable = false)
+    @JsonIgnore
     private LoaiBaiViet loaiBaiViet;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chuDe")

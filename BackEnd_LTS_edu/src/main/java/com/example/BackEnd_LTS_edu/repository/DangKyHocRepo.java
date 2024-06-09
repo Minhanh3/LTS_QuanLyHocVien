@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DangKyHocRepo extends JpaRepository<DangKyHoc, Integer> {
+
+    int countByKhoaHocIdAndTinhTrangHocId(int khoaHocId, int tinhTrangHocId);
+
 }

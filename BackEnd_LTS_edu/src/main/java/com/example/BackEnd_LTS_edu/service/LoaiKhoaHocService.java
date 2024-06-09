@@ -1,10 +1,9 @@
-package com.example.BackEnd_LTS_edu.service.loaikhoahoc;
+package com.example.BackEnd_LTS_edu.service;
 
 import com.example.BackEnd_LTS_edu.entity.LoaiKhoaHoc;
 import com.example.BackEnd_LTS_edu.repository.LoaiKhoaHocRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;

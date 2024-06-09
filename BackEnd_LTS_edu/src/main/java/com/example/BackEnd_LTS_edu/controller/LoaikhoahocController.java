@@ -1,7 +1,7 @@
 package com.example.BackEnd_LTS_edu.controller;
 
 import com.example.BackEnd_LTS_edu.entity.LoaiKhoaHoc;
-import com.example.BackEnd_LTS_edu.service.loaikhoahoc.LoaiKhoaHocService;
+import com.example.BackEnd_LTS_edu.service.LoaiKhoaHocService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

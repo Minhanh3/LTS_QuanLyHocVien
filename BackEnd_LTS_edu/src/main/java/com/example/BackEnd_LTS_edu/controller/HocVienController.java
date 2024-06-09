@@ -1,9 +1,10 @@
 package com.example.BackEnd_LTS_edu.controller;
 
+import com.example.BackEnd_LTS_edu.entity.HocVien;
 import com.example.BackEnd_LTS_edu.entity.KhoaHoc;
+import com.example.BackEnd_LTS_edu.service.HocVienService;
 import com.example.BackEnd_LTS_edu.service.KhoaHocService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,49 +21,52 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("khoahoc")
-public class KhoahocController {
+@RequestMapping("hocvien")
+public class HocVienController {
 
     @Autowired
     private KhoaHocService khoaHocService;
 
-    @GetMapping("getAllKh")
-    public List<KhoaHoc> getLoaiKhoaHoc() {
-        return khoaHocService.getAllKhoaHoc();
+    @Autowired
+    private HocVienService hocVienService;
+
+    @GetMapping("getAllhv")
+    public List<HocVien> getAllHocv() {
+        return hocVienService.getAllHocVien();
     }
 
-    @PostMapping("addKh")
-    public ResponseEntity<String> addLKh(@RequestBody KhoaHoc khoaHoc) {
-        khoaHocService.addKhoaHoc(khoaHoc);
-        return ResponseEntity.ok("Add Khoa học thành công");
+    @PostMapping("addHv")
+    public ResponseEntity<String> addKv(@RequestBody HocVien hocVien) {
+        hocVienService.addHocien(hocVien);
+        return ResponseEntity.ok("Add Học viên thành công");
     }
 
     @PutMapping("updateKh")
-    public KhoaHoc updatelkh(@RequestBody KhoaHoc khoaHoc) {
-//        return ResponseEntity.ok("Update success");
-        return khoaHocService.updateKhoaHoc(khoaHoc);
+    public ResponseEntity<String> updatelkh(@RequestBody HocVien hocVien) {
+        hocVienService.updateHocVien(hocVien);
+        return ResponseEntity.ok("Update success");
     }
 
-    @DeleteMapping("deleteLkh/{id}")
+    @DeleteMapping("deleteHv/{id}")
     public ResponseEntity<String> deleteLkh(@PathVariable int id) {
-        khoaHocService.deleteKHoc(id);
+        hocVienService.deleteHocvien(id);
         return ResponseEntity.ok("Delete success");
     }
 
-    @GetMapping("searchTenKhoaHoc")
-    public List<KhoaHoc> searchTenKhoaHoc(@RequestParam String tenKhoaHoc) {
-        return khoaHocService.findByTenKhoaHoc(tenKhoaHoc);
+    @GetMapping("searchTenAndEmail")
+    public List<HocVien> searchTenHocViens(@RequestParam String hoTen, @RequestParam String email) {
+        return hocVienService.findByTenVaEmail(hoTen, email);
     }
 
     @GetMapping("phanTrang")
-    public List<KhoaHoc> phanTrang(Integer number, Integer size) {
+    public List<HocVien> phanTrang(Integer number, Integer size) {
         if (number == null) {
             number = 0;
         }
         if (size == null) {
             size = 5;
         }
-        Pageable khoaHocs = PageRequest.of(number, size);
-        return khoaHocService.getAllKhoaHocList(khoaHocs);
+        Pageable hocviens = PageRequest.of(number, size);
+        return hocVienService.phanTrang(hocviens);
     }
 }

@@ -36,7 +36,7 @@ public class KhoaHoc {
     private String tenKhoaHoc;
 
     @Column(name = "thoigianhoc")
-    private LocalDate thoiGianHoc;
+    private int thoiGianHoc;
 
     @Column(name = "gioithieu")
     private String gioiThieu;

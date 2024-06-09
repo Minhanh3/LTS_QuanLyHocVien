@@ -1,71 +1,89 @@
 package com.example.BackEnd_LTS_edu.service;
 
+import com.example.BackEnd_LTS_edu.entity.DangKyHoc;
 import com.example.BackEnd_LTS_edu.entity.KhoaHoc;
 import com.example.BackEnd_LTS_edu.entity.LoaiKhoaHoc;
+import com.example.BackEnd_LTS_edu.repository.DangKyHocRepo;
 import com.example.BackEnd_LTS_edu.repository.KhoaHocRepo;
 import com.example.BackEnd_LTS_edu.repository.LoaiKhoaHocRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class KhoaHocService {
 
     @Autowired
     private KhoaHocRepo khoaHocRepo;
-
     @Autowired
     private LoaiKhoaHocRepo loaiKhoaHocRepo;
+    @Autowired
+    private DangKyHocRepo dangKyHocRepo;
 
     public List<KhoaHoc> getAllKhoaHoc() {
         return khoaHocRepo.findAll();
     }
 
     public KhoaHoc addKhoaHoc(KhoaHoc khoaHoc) {
-        Optional<LoaiKhoaHoc> loaiKhoaHoc = loaiKhoaHocRepo.findById(khoaHoc.getKhoaHocId());
-        if (khoaHoc == null) throw new NullPointerException("khoaHoc is null");
-        if (!loaiKhoaHoc.isPresent()) throw new RuntimeException("KhoaHoc Not Found");
-        return khoaHocRepo.save(khoaHoc);
-    }
-
-    public KhoaHoc updateKhoaHoc(KhoaHoc khoaHoc) {
-        Optional<LoaiKhoaHoc> lkh = loaiKhoaHocRepo.findById(khoaHoc.getKhoaHocId());
-        Optional<KhoaHoc> kh = khoaHocRepo.findById(khoaHoc.getKhoaHocId());
-        if (lkh.isPresent() && kh.isPresent()) {
-            KhoaHoc khoah = kh.get();
-            khoah.setLoaiKhoaHoc(lkh.get());
-            khoah.setLoaiKhoaHocId(lkh.get().getLoaiKhoaHocId());
-            khoah.setTenKhoaHoc(kh.get().getTenKhoaHoc());
-            khoah.setThoiGianHoc(kh.get().getThoiGianHoc());
-            khoah.setGioiThieu(kh.get().getGioiThieu());
-            khoah.setNoiDung(kh.get().getNoiDung());
-            khoah.setHocPhi(kh.get().getHocPhi());
-            khoah.setSoHocVien(kh.get().getSoHocVien());
-            khoah.setSoLuongMon(kh.get().getSoLuongMon());
-            khoah.setHinhAnh(kh.get().getHinhAnh());
-            if (lkh.get().getLoaiKhoaHocId() == null) throw new NullPointerException("loaiKhoaHocId is null");
-            if (kh.get().getLoaiKhoaHocId() == null) throw new NullPointerException("getLoaiKhoaHocId is null");
-            if (kh.get().getTenKhoaHoc() == null) throw new NullPointerException("getTenKhoaHoc is null");
-            if (kh.get().getThoiGianHoc() == null) throw new NullPointerException("getThoiGianHoc is null");
-            if (kh.get().getGioiThieu() == null ) throw new NullPointerException("getGioiThieu is null");
-            if (kh.get().getNoiDung() == null) throw new NullPointerException("getNoiDung is null");
-            if (kh.get().getHocPhi() == null) throw new NullPointerException("getHocPhi is null");
-            if (kh.get().getSoHocVien() == 0) throw new NullPointerException("getSoHocVien is null");
-            if (kh.get().getSoLuongMon() == 0) throw new NullPointerException("getSoLuongMon is null");
-            if (kh.get().getHinhAnh() == null) throw new NullPointerException("getHinhAnh is null");
-            khoaHocRepo.save(khoah);
-        }
-        return khoaHoc;
-    }
-
-    public String deleteLKHoc(int id) {
-        if (khoaHocRepo.findById(id).isPresent()) {
-            khoaHocRepo.deleteById(id);
+        Optional<LoaiKhoaHoc> loaiKhoaHocOptional = loaiKhoaHocRepo.findById(khoaHoc.getLoaiKhoaHocId());
+        if (loaiKhoaHocOptional.isPresent()) {
+            khoaHoc.setLoaiKhoaHocId(loaiKhoaHocOptional.get().getLoaiKhoaHocId());
+            khoaHoc.setLoaiKhoaHoc(loaiKhoaHocOptional.get());
+            return khoaHocRepo.save(khoaHoc);
         } else {
-            throw new IllegalArgumentException("Id không tồi tại");
+            throw new RuntimeException("LoaiKhoaHoc with ID " + khoaHoc.getLoaiKhoaHocId() + " Not Found");
         }
-        return "Khoa Hoc Deleted Successfully";
+    }
+
+    public KhoaHoc updateKhoaHoc(KhoaHoc updatedKhoaHoc) {
+        Optional<KhoaHoc> existingKhoaHocOptional = khoaHocRepo.findById(updatedKhoaHoc.getKhoaHocId());
+        if (existingKhoaHocOptional.isPresent()) {
+            KhoaHoc existingKhoaHoc = existingKhoaHocOptional.get();
+            existingKhoaHoc.setTenKhoaHoc(updatedKhoaHoc.getTenKhoaHoc());
+            existingKhoaHoc.setThoiGianHoc(updatedKhoaHoc.getThoiGianHoc());
+            existingKhoaHoc.setGioiThieu(updatedKhoaHoc.getGioiThieu());
+            existingKhoaHoc.setNoiDung(updatedKhoaHoc.getNoiDung());
+            existingKhoaHoc.setHocPhi(updatedKhoaHoc.getHocPhi());
+            existingKhoaHoc.setSoHocVien(updatedKhoaHoc.getSoHocVien());
+            existingKhoaHoc.setSoLuongMon(updatedKhoaHoc.getSoLuongMon());
+            existingKhoaHoc.setHinhAnh(updatedKhoaHoc.getHinhAnh());
+            if (!existingKhoaHoc.getLoaiKhoaHocId().equals(updatedKhoaHoc.getLoaiKhoaHocId())) {
+                Optional<LoaiKhoaHoc> loaiKhoaHocOptional = loaiKhoaHocRepo.findById(updatedKhoaHoc.getLoaiKhoaHocId());
+                if (loaiKhoaHocOptional.isPresent()) {
+                    existingKhoaHoc.setLoaiKhoaHoc(loaiKhoaHocOptional.get());
+                    existingKhoaHoc.setLoaiKhoaHocId(loaiKhoaHocOptional.get().getLoaiKhoaHocId());
+                } else {
+                    throw new RuntimeException("LoaiKhoaHoc Not Found");
+                }
+            }
+            return khoaHocRepo.save(existingKhoaHoc);
+        } else {
+            throw new RuntimeException("KhoaHoc Not Found");
+        }
+    }
+
+    public String deleteKHoc(int id) {
+        Optional<KhoaHoc> khoaHocOptional = khoaHocRepo.findById(id);
+        if (khoaHocOptional.isPresent()) {
+            KhoaHoc khoaHoc = khoaHocOptional.get();
+            dangKyHocRepo.deleteAll(khoaHoc.getDangKyHocs());
+            khoaHocRepo.deleteById(id);
+            return "Khoa Hoc Deleted Successfully";
+        } else {
+            throw new IllegalArgumentException("Id không tồn tại");
+        }
+    }
+    public List<KhoaHoc> findByTenKhoaHoc(String tenKhoaHoc) {
+        if (tenKhoaHoc == null || tenKhoaHoc.isEmpty()) {
+            throw new RuntimeException("TenKhoaHoc is null or empty");
+        }
+        return khoaHocRepo.findByTenKhoaHoc(tenKhoaHoc);
+    }
+    public List<KhoaHoc> getAllKhoaHocList(Pageable pageable) {
+        return khoaHocRepo.findAll(pageable).getContent();
     }
 }

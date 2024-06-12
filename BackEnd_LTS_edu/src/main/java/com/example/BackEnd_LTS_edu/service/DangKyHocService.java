@@ -70,6 +70,10 @@ public class DangKyHocService {
             KhoaHoc khoaHoc = khoaHocRepo.findById(dangKyHoc.getKhoaHocId())
                     .orElseThrow(() -> new IllegalArgumentException("KhoaHoc with given ID not found"));
 
+            int soHocVien = khoaHoc.getSoHocVien() + 1;
+            khoaHoc.setSoHocVien(soHocVien);
+            khoaHocRepo.save(khoaHoc);
+
             if (tinhTrangHoc.getTenTinhTrang().equals("Đang học chính")) {
                 dangKyHoc.setNgayBatDau(dangKyHoc.getNgayDangKy());
                 if (dangKyHoc.getNgayBatDau() != null) {
@@ -78,10 +82,6 @@ public class DangKyHocService {
                     throw new IllegalArgumentException("NgayBatDau is required");
                 }
             }
-            // Cập nhật số lượng học viên
-            int soHocVien = dangKyHocRepo.countByKhoaHocIdAndTinhTrangHocId(khoaHoc.getKhoaHocId(), tinhTrangHoc.getTinhTrangHocId());
-            khoaHoc.setSoHocVien(soHocVien);
-            khoaHocRepo.save(khoaHoc);
 
             dangKyHoc.setTinhTrangHoc(tinhTrangHoc);
             dangKyHocRepo.save(dangKyHoc);
